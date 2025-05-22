@@ -1,0 +1,51 @@
+# Multi-Cluster Manager Configuration
+# This file defines all the Kubernetes clusters you want to manage
+# Copy this file to ~/.mcm/config.yaml and customize it for your clusters
+
+# Global settings that apply to all clusters
+defaultNamespace: "default"  # Namespace to use when none is specified
+timeout: 30                  # Connection timeout in seconds
+
+# Define your clusters here
+clusters:
+  # Development environment - typically has relaxed security for testing
+  - name: "dev-cluster"
+    context: "dev-context"                    # kubectl context name from your kubeconfig
+    kubeconfig: "~/.kube/config"             # Path to kubeconfig (optional, defaults to ~/.kube/config)
+    environment: "development"               # Helps organize clusters by purpose
+    region: "us-west-2"                     # Useful for multi-region deployments
+    default: true                           # This will be the default cluster for commands
+
+  # Staging environment - mirrors production for final testing
+  - name: "staging-cluster"
+    context: "staging-context"
+    kubeconfig: "~/.kube/staging-config"
+    environment: "staging"
+    region: "us-east-1"
+
+  # Production environments - you might have multiple for high availability
+  - name: "prod-us-east"
+    context: "production-us-east"
+    kubeconfig: "~/.kube/prod-config"
+    environment: "production"
+    region: "us-east-1"
+
+  - name: "prod-eu-west"
+    context: "production-eu-west"
+    kubeconfig: "~/.kube/prod-config"
+    environment: "production"
+    region: "eu-west-1"
+
+  # You could also have clusters for different purposes
+  - name: "monitoring-cluster"
+    context: "monitoring"
+    kubeconfig: "~/.kube/config"
+    environment: "infrastructure"
+    region: "us-central-1"
+
+# Tips for setting up your configuration:
+# 1. Make sure each context exists in your kubeconfig files
+# 2. Test connectivity: kubectl --context=your-context-name get nodes
+# 3. Use descriptive names that indicate environment and region
+# 4. Keep kubeconfig files secure - never commit them to version control
+# 5. Consider using separate kubeconfig files for different environments
