@@ -3,12 +3,12 @@ package workload
 import (
 	"context"
 	"fmt"
-	"strings"
+	_ "strings"
 	"sync"
 	"time"
 
 	appsv1 "k8s.io/api/apps/v1"
-	corev1 "k8s.io/api/core/v1"
+	_ "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/yaml"
 
@@ -128,13 +128,18 @@ func (m *Manager) getDeploymentsFromCluster(clusterName, namespace string) []Dep
 		}
 
 		// Determine deployment status based on replica counts
-		status := "Unknown"
+		// We explicitly handle all cases to make the logic clear and maintainable
+		var status string
 		if deployment.Status.ReadyReplicas == *deployment.Spec.Replicas {
 			status = "Ready"
 		} else if deployment.Status.ReadyReplicas > 0 {
 			status = "Partial"
-		} else {
+		} else if deployment.Status.ReadyReplicas == 0 {
 			status = "NotReady"
+		} else {
+			// This case handles unexpected scenarios (e.g., negative replica counts)
+			// which could indicate API issues or edge cases we haven't considered
+			status = "Unknown"
 		}
 
 		// Calculate age of the deployment

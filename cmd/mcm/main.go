@@ -94,9 +94,19 @@ func init() {
 	rootCmd.PersistentFlags().String("output", "table", "output format (table, json, yaml)")
 
 	// Bind flags to viper for configuration management
-	viper.BindPFlag("config", rootCmd.PersistentFlags().Lookup("config"))
-	viper.BindPFlag("verbose", rootCmd.PersistentFlags().Lookup("verbose"))
-	viper.BindPFlag("output", rootCmd.PersistentFlags().Lookup("output"))
+	// We check these errors because flag binding can fail if flag names don't match
+	// or if the viper configuration is in an invalid state
+	if err := viper.BindPFlag("config", rootCmd.PersistentFlags().Lookup("config")); err != nil {
+		// This is a programming error that should be caught during development
+		// We use panic here because this indicates a fundamental setup problem
+		panic(fmt.Sprintf("failed to bind config flag: %v", err))
+	}
+	if err := viper.BindPFlag("verbose", rootCmd.PersistentFlags().Lookup("verbose")); err != nil {
+		panic(fmt.Sprintf("failed to bind verbose flag: %v", err))
+	}
+	if err := viper.BindPFlag("output", rootCmd.PersistentFlags().Lookup("output")); err != nil {
+		panic(fmt.Sprintf("failed to bind output flag: %v", err))
+	}
 
 	// Add all our subcommands to the root command
 	// This builds the complete command tree that users will interact with

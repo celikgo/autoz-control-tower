@@ -2,7 +2,8 @@
 # This creates a minimal, secure container image for production use
 
 # Build stage - use full Go environment for compilation
-FROM golang:1.21-alpine AS builder
+# Updated to use Go 1.24.0 to match modern development environments
+FROM golang:1.24.0-alpine AS builder
 
 # Install build dependencies
 RUN apk add --no-cache git ca-certificates tzdata
@@ -56,9 +57,9 @@ WORKDIR /app
 LABEL org.opencontainers.image.title="Multi-Cluster Manager" \
       org.opencontainers.image.description="A CLI tool for managing Kubernetes workloads across multiple clusters" \
       org.opencontainers.image.version="${VERSION}" \
-      org.opencontainers.image.source="https://github.com/celikgo/multicluster-manager" \
+      org.opencontainers.image.source="https://github.com/celikgo/autoz-control-tower" \
       org.opencontainers.image.licenses="MIT" \
-      org.opencontainers.image.authors="Your Name <your.email@example.com>"
+      org.opencontainers.image.authors="gokhun <celik.gokhun@autozeug.com>"
 
 # Expose health check endpoint (if we add one in the future)
 EXPOSE 8080

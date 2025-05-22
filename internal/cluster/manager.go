@@ -160,7 +160,7 @@ func (m *Manager) connectToCluster(clusterConfig config.ClusterConfig) *ClusterC
 	}
 
 	// Step 5: Test the connection by trying to get cluster version
-	ctx, cancel := context.WithTimeout(context.Background(), timeout)
+	_, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 
 	_, err = clientset.Discovery().ServerVersion()
@@ -263,7 +263,7 @@ func (m *Manager) TestConnections() error {
 			continue
 		}
 
-		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		_, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		_, err := client.Clientset.Discovery().ServerVersion()
 		cancel()
 

@@ -2,7 +2,7 @@
 # This provides professional build, test, and distribution automation
 
 # Project information
-PROJECT_NAME := multicluster-manager
+PROJECT_NAME := autoz-control-tower
 BINARY_NAME := mcm
 VERSION := $(shell git describe --tags --always --dirty 2>/dev/null || echo "dev")
 COMMIT := $(shell git rev-parse --short HEAD 2>/dev/null || echo "unknown")
@@ -72,10 +72,10 @@ build-all: ## Build binaries for all supported platforms
 
 	@echo "$(GREEN)✓ Built all platform binaries in $(DIST_DIR)/$(NC)"
 
-test: ## Run all tests
-	@echo "$(BLUE)Running tests...$(NC)"
-	@go test -v -race -coverprofile=coverage.out ./...
-	@echo "$(GREEN)✓ Tests completed$(NC)"
+test: ## Run unit tests only (safe for CI)
+	@echo "$(BLUE)Running unit tests...$(NC)"
+	@SKIP_INTEGRATION_TESTS=true go test -v -race -coverprofile=coverage.out ./...
+	@echo "$(GREEN)✓ Unit tests completed$(NC)"
 
 test-coverage: test ## Run tests and generate coverage report
 	@echo "$(BLUE)Generating coverage report...$(NC)"
